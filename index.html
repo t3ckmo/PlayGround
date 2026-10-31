@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#050605">
+  <meta name="description" content="BLACKWATER — a first-person survival horror chapter made for mobile.">
+  <title>BLACKWATER — A First-Person Nightmare</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23050605'/%3E%3Cpath d='M50 16 64 44 50 84 36 44Z' fill='%23a43b2b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js" } }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="First-person horror game"></canvas>
+
+    <div class="grade" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="letterbox top" aria-hidden="true"></div>
+    <div class="letterbox bottom" aria-hidden="true"></div>
+    <div id="lightningFlash" class="lightning-flash" aria-hidden="true"></div>
+    <div id="hurtFlash" class="hurt-flash" aria-hidden="true"></div>
+    <div id="whiteFade" class="white-fade" aria-hidden="true"></div>
+
+    <div id="loadingScreen" class="screen loading-screen">
+      <div class="loader-mark">B<span>/</span>W</div>
+      <p>THE HOUSE IS WAITING</p>
+      <div class="loader-line"><i></i></div>
+      <small>HEADPHONES RECOMMENDED</small>
+    </div>
+
+    <section id="titleScreen" class="screen title-screen hidden" aria-label="Main menu">
+      <div class="title-copy">
+        <p class="eyebrow"><span></span> A FIRST-PERSON NIGHTMARE</p>
+        <h1 aria-label="Blackwater"><span>BLACK</span><span>WATER</span></h1>
+        <p class="chapter">CHAPTER I <b>·</b> THE HOUSE THAT WAITS</p>
+        <p class="title-blurb">The road is gone. The lights are out.<br>Something in the walls knows your name.</p>
+        <div class="title-actions">
+          <button id="startBtn" class="start-btn" type="button">START</button>
+          <span class="start-caption">enter the house</span>
+        </div>
+        <p class="title-warning">Contains flashing lights, sudden sounds, and sustained tension.</p>
+      </div>
+      <div class="title-foot">
+        <span>© 2026 Hollow Creek</span>
+        <span class="headphones">◐ HEADPHONES RECOMMENDED</span>
+        <span id="deviceHint">TOUCH · KEYBOARD · MOUSE</span>
+      </div>
+      <div class="title-rule" aria-hidden="true"></div>
+    </section>
+
+    <div id="hud" class="hud hidden" aria-label="Game interface">
+      <div class="hud-top-left">
+        <p class="hud-chapter">CHAPTER I</p>
+        <h2 id="objective">FIND A WAY OUT</h2>
+        <p id="objectiveSub">The front door is nailed shut. Search the house.</p>
+        <div class="vitals">
+          <span class="heart" aria-hidden="true">♥</span>
+          <div class="vital-track"><i id="healthFill"></i></div>
+          <div class="stamina-track"><i id="staminaFill"></i></div>
+        </div>
+      </div>
+
+      <div id="inventory" class="inventory" aria-label="Inventory"></div>
+
+      <button id="pauseBtn" class="icon-btn pause-btn" type="button" aria-label="Pause">Ⅱ</button>
+
+      <div id="reticle" class="reticle" aria-hidden="true"><i></i></div>
+      <div id="interactPrompt" class="interact-prompt hidden">
+        <span class="prompt-key" id="promptKey">E</span>
+        <span id="promptText">INTERACT</span>
+      </div>
+      <div id="caption" class="caption"></div>
+
+      <div id="mobileControls" class="mobile-controls" aria-label="Touch controls">
+        <div id="joystick" class="joystick hidden"><span class="joy-ring"></span><i class="joy-knob"></i></div>
+        <div id="moveHint" class="move-hint"><span>MOVE</span></div>
+        <button id="runBtn" class="round-btn run-btn" type="button" aria-label="Run">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10 12l-7 6.5v-13zm8 0 7 6.5-7 6.5v-13z"/></svg>
+        </button>
+        <button id="lightBtn" class="round-btn light-btn active" type="button" aria-label="Flashlight">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2h6l1 5-2 4v9h-4v-9L8 7z"/><path d="M9.5 6h5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <button id="fireBtn" class="round-btn fire-btn hidden" type="button" aria-label="Fire">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9l2-2h5v3h-2l-1 2v2h-3l-1 4H8v-4H4z"/></svg>
+          <span id="ammoCount">6</span>
+        </button>
+        <button id="interactBtn" class="round-btn interact-btn disabled" type="button" aria-label="Interact">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11V6.5a1.5 1.5 0 0 1 3 0V10h1V4.5a1.5 1.5 0 0 1 3 0V10h1V5.5a1.5 1.5 0 0 1 3 0V14c0 4-2.6 7-7 7h-1c-3 0-5-2-6-4l-2-4.5a1.6 1.6 0 0 1 2.4-1.9z"/></svg>
+        </button>
+      </div>
+
+      <div class="desktop-hint">
+        <span><b>WASD</b> MOVE</span>
+        <span><b>MOUSE</b> LOOK</span>
+        <span><b>E</b> INTERACT</span>
+        <span><b>F</b> LIGHT</span>
+        <span><b>SHIFT</b> RUN</span>
+      </div>
+      <div id="ammoHud" class="ammo-hud hidden"><span id="ammoHudCount">6 / 6</span><small>9MM</small></div>
+    </div>
+
+    <div id="noteOverlay" class="note-overlay hidden" role="dialog" aria-modal="true" aria-label="Note">
+      <div class="note-paper">
+        <p id="noteKicker">A NOTE, LEFT BEHIND</p>
+        <h3 id="noteTitle">If you read this</h3>
+        <p id="noteBody"></p>
+        <button id="noteClose" type="button">PUT IT DOWN</button>
+      </div>
+    </div>
+
+    <div id="pauseOverlay" class="screen pause-overlay hidden" role="dialog" aria-modal="true" aria-label="Paused">
+      <p class="eyebrow"><span></span> THE HOUSE WAITS</p>
+      <h2>PAUSED</h2>
+      <div class="overlay-actions">
+        <button id="resumeBtn" type="button">RESUME</button>
+        <button id="pauseRestartBtn" class="ghost-btn" type="button">RESTART</button>
+      </div>
+    </div>
+
+    <div id="deathOverlay" class="screen end-overlay death-overlay hidden" role="dialog" aria-modal="true" aria-label="You died">
+      <p class="eyebrow"><span></span> THE HOUSE KEEPS YOU</p>
+      <h2>YOU DIED</h2>
+      <p class="end-copy">The bayou is patient. It has all night.</p>
+      <button id="restartBtn" type="button">TRY AGAIN</button>
+      <p class="end-tip" id="deathTip"></p>
+    </div>
+
+    <div id="winOverlay" class="screen end-overlay win-overlay hidden" role="dialog" aria-modal="true" aria-label="You escaped">
+      <p class="eyebrow"><span></span> CHAPTER I COMPLETE</p>
+      <h2>YOU GOT OUT</h2>
+      <p class="end-copy">The road is still gone. The house is still waiting.<br>But whatever wore that mask is not following.</p>
+      <button id="winRestartBtn" type="button">PLAY AGAIN</button>
+      <p class="end-stat" id="winStats"></p>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="rotateHint" class="rotate-hint">ROTATE FOR A WIDER VIEW</div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
