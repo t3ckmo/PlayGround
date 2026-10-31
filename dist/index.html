@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b1013" />
+    <meta
+      name="description"
+      content="BLOCKFALL is a tiny voxel sandbox. Explore rolling hills, mine blocks and build anything you can imagine — right in your browser."
+    />
+    <title>BLOCKFALL — a tiny voxel sandbox</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f1518'/%3E%3Cpath d='M16 5l10 5.8v10.4L16 27 6 21.2V10.8z' fill='%236dbf4a'/%3E%3Cpath d='M16 5l10 5.8-10 5.8-10-5.8z' fill='%238fe06a'/%3E%3C/svg%3E"
+    />
+    <script type="module" crossorigin src="./assets/index-DbVl2fdt.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CoAgZAUt.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game" aria-label="Voxel world"></canvas>
+      <div id="underwater"></div>
+      <div id="vignette"></div>
+
+      <div id="hud" class="hidden">
+        <div id="stats" aria-hidden="true">
+          <span id="fps">60</span> fps <span class="dot">·</span>
+          <span id="coords">0 0 0</span>
+        </div>
+
+        <div id="top-actions">
+          <button id="sound-btn" class="icon-btn" aria-label="Toggle sound" title="Toggle sound">
+            <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9h4l5-4v14l-5-4H4z" />
+              <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+              <path d="M19 6a8.5 8.5 0 0 1 0 12" />
+            </svg>
+            <svg class="icon-off" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9h4l5-4v14l-5-4H4z" />
+              <path d="m16 9 5 6M21 9l-5 6" />
+            </svg>
+          </button>
+          <button id="pause-btn" class="icon-btn" aria-label="Pause" title="Pause">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="7" y="5" width="3.5" height="14" rx="1" />
+              <rect x="13.5" y="5" width="3.5" height="14" rx="1" />
+            </svg>
+          </button>
+        </div>
+
+        <div id="crosshair" aria-hidden="true"></div>
+        <div id="toast" class="hidden"></div>
+        <div id="hotbar" role="toolbar" aria-label="Block palette"></div>
+        <div id="hint" aria-hidden="true"></div>
+      </div>
+
+      <div id="touch-controls" class="hidden">
+        <div id="joystick" aria-label="Movement joystick">
+          <div id="joystick-knob"></div>
+        </div>
+        <div id="touch-actions">
+          <button id="mine-btn" class="touch-btn" aria-label="Mine block">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <path d="M6 26 19 13" />
+              <path d="M14 8c4-3 9-2 12 1l-4 4c-2-2-5-2-7 0z" />
+              <path d="M17 11 23 5" />
+            </svg>
+          </button>
+          <button id="place-btn" class="touch-btn" aria-label="Place block">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <path d="m16 5 10 5.5v11L16 27 6 21.5v-11z" />
+              <path d="m6 10.5 10 5.5 10-5.5M16 16v11" />
+            </svg>
+          </button>
+          <button id="jump-btn" class="touch-btn jump" aria-label="Jump">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <path d="m16 25V8M9 15l7-7 7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="menu" class="overlay menu-overlay">
+        <div class="menu-shade"></div>
+        <div class="menu-content">
+          <div class="brand">
+            <div class="eyebrow"><span class="pulse"></span> A tiny voxel sandbox</div>
+            <h1><span>BLOCK</span><span class="accent">FALL</span></h1>
+            <p class="tagline">
+              Shape the land. Build a home.<br class="mobile-break" />
+              Get lost in the quiet.
+            </p>
+            <div class="menu-actions">
+              <button id="play-btn" class="btn primary">
+                <span>Play</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7z" /></svg>
+              </button>
+              <button id="new-btn" class="btn">New World</button>
+            </div>
+            <div class="seed-row">
+              <span class="seed-dot"></span> Seed <span id="seed-label">—</span>
+              <span id="world-status" class="world-status"></span>
+            </div>
+          </div>
+
+          <aside class="info-card">
+            <h2>How to play</h2>
+            <ul class="controls">
+              <li><span class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><span>Move</span></li>
+              <li><span class="keys"><kbd>Mouse</kbd></span><span>Look around</span></li>
+              <li><span class="keys"><kbd>Space</kbd></span><span>Jump / swim</span></li>
+              <li><span class="keys"><kbd>Shift</kbd></span><span>Sprint</span></li>
+              <li><span class="keys"><kbd>LMB</kbd><kbd>RMB</kbd></span><span>Mine / place</span></li>
+              <li><span class="keys"><kbd>1</kbd>–<kbd>9</kbd></span><span>Pick a block</span></li>
+              <li><span class="keys"><kbd>F</kbd></span><span>Toggle flight</span></li>
+              <li><span class="keys"><kbd>Esc</kbd></span><span>Pause</span></li>
+            </ul>
+            <div class="tip">
+              <strong>Tip</strong> — Water is swimmable. Climb a mountain and watch the sun go down.
+            </div>
+          </aside>
+        </div>
+        <footer class="menu-footer">
+          <span>Built with Three.js</span><span class="dot">·</span><span>Runs entirely in your browser</span>
+        </footer>
+      </div>
+
+      <div id="loading" class="overlay loading-overlay hidden" aria-live="polite">
+        <div class="loader">
+          <div class="loader-mark"><span></span><span></span><span></span><span></span></div>
+          <div class="loader-title">Shaping the world</div>
+          <div class="bar"><div id="load-fill"></div></div>
+          <div id="load-text">0%</div>
+        </div>
+      </div>
+
+      <div id="pause" class="overlay pause-overlay hidden">
+        <div class="pause-card">
+          <div class="eyebrow">Take a breath</div>
+          <h2>Paused</h2>
+          <button id="resume-btn" class="btn primary">Resume</button>
+          <button id="pause-new-btn" class="btn">New World</button>
+          <button id="pause-sound-btn" class="btn">Sound: On</button>
+          <button id="quit-btn" class="btn ghost">Quit to Title</button>
+          <p class="pause-seed">Seed <span id="pause-seed-label">—</span></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

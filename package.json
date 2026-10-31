@@ -1,0 +1,18 @@
+{
+  "name": "blockfall",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A tiny voxel sandbox you can shape, build and explore in the browser.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3002",
+    "build": "vite build --base ./",
+    "preview": "vite preview --host 0.0.0.0 --port 3002"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^6.4.5"
+  }
+}
