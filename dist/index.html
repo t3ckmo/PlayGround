@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b1220" />
+    <meta
+      name="description"
+      content="VoxelCraft — a tiny Minecraft-inspired sandbox. Break blocks, build anything, and explore a procedurally generated world."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e1725'/%3E%3Cpath d='M16 5l10 5.5v11L16 27 6 21.5v-11z' fill='%236bbe45'/%3E%3Cpath d='M16 5l10 5.5-10 5.5-10-5.5z' fill='%238ce05d'/%3E%3Cpath d='M6 10.5L16 16v11L6 21.5z' fill='%234a9a30'/%3E%3C/svg%3E"
+    />
+    <title>VoxelCraft — a blocky sandbox</title>
+    <script type="module" crossorigin src="./assets/index-Cj0CJoPN.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BsMbdz9a.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game" aria-label="VoxelCraft game view"></canvas>
+
+      <div id="vignette"></div>
+      <div id="water-overlay"></div>
+
+      <div id="hud" class="hidden">
+        <div id="crosshair" aria-hidden="true"><span></span><span></span></div>
+
+        <div id="hud-top-left">
+          <div class="brand-mini"><span class="brand-cube"></span>VOXELCRAFT</div>
+          <div id="stats">x 0 &nbsp;y 0 &nbsp;z 0 &nbsp;·&nbsp; 0 fps</div>
+        </div>
+
+        <div id="hud-top-right">
+          <div id="clock"><span class="clock-icon"></span><span id="clock-text">Day 1 · 08:00</span></div>
+        </div>
+
+        <div id="block-label"></div>
+        <div id="hotbar" role="toolbar" aria-label="Block hotbar"></div>
+
+        <div id="hint">
+          <span><b>WASD</b> move</span>
+          <span><b>Space</b> jump</span>
+          <span><b>LMB</b> break</span>
+          <span><b>RMB</b> place</span>
+          <span><b>F</b> fly</span>
+          <span><b>Esc</b> pause</span>
+        </div>
+
+        <div id="mode-badge">creative</div>
+      </div>
+
+      <div id="touch-controls" class="hidden">
+        <div id="joystick" aria-label="Movement joystick">
+          <div id="joystick-knob"></div>
+        </div>
+        <div id="touch-buttons">
+          <button id="btn-jump" class="touch-btn" aria-label="Jump">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" /></svg>
+          </button>
+          <button id="btn-place" class="touch-btn" aria-label="Place block">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 4v8l-7 4-7-4V8zM5 8l7 4 7-4M12 12v8" /></svg>
+          </button>
+          <button id="btn-break" class="touch-btn break" aria-label="Break block">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l7-7M8 3l3 3 2-2 4 4-2 2 3 3-4 4-3-3-2 2-4-4 2-2-3-3z" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="loading" class="screen">
+        <div class="loading-inner">
+          <div class="logo logo-small">
+            <span class="logo-voxel">VOXEL</span><span class="logo-craft">CRAFT</span>
+          </div>
+          <div class="loading-text">Generating terrain…</div>
+          <div class="progress"><div id="progress-fill"></div></div>
+          <div class="loading-tip">Tip: press <b>F</b> to fly and build in mid-air.</div>
+        </div>
+      </div>
+
+      <div id="menu" class="screen hidden">
+        <div class="menu-glow"></div>
+        <div class="menu-card">
+          <div class="menu-eyebrow">A tiny blocky sandbox</div>
+          <div class="logo">
+            <span class="logo-voxel">VOXEL</span><span class="logo-craft">CRAFT</span>
+          </div>
+          <p class="tagline">Break. Build. Explore.<br />An endless world made of blocks.</p>
+
+          <div class="menu-actions">
+            <button id="play-btn" class="btn btn-primary">Play</button>
+            <button id="newworld-btn" class="btn btn-ghost">New World</button>
+          </div>
+
+          <div class="seed-row">World seed <b id="seed-value">—</b></div>
+
+          <div class="controls-grid">
+            <span><b>WASD</b> Move</span>
+            <span><b>Mouse</b> Look</span>
+            <span><b>LMB</b> Break block</span>
+            <span><b>RMB</b> Place block</span>
+            <span><b>Space</b> Jump / swim</span>
+            <span><b>F</b> Toggle flying</span>
+            <span><b>1–9</b> Pick block</span>
+            <span><b>Esc</b> Pause</span>
+          </div>
+          <div class="touch-note">Touch controls appear automatically on phones and tablets.</div>
+        </div>
+        <div class="menu-footer">Procedurally generated · Saved locally · No downloads</div>
+      </div>
+
+      <div id="pause" class="screen hidden">
+        <div class="pause-card">
+          <div class="pause-title">Paused</div>
+          <div class="pause-sub">The world is waiting.</div>
+          <button id="resume-btn" class="btn btn-primary">Resume</button>
+          <button id="newworld-btn-2" class="btn btn-ghost">New World</button>
+          <div class="pause-controls">
+            <span><b>WASD</b> move</span><span><b>Space</b> jump</span><span><b>F</b> fly</span
+            ><span><b>LMB</b> break</span><span><b>RMB</b> place</span><span><b>Esc</b> resume</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
